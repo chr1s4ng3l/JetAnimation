@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -24,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tamayo.jetanimation.ui.theme.JetAnimationTheme
 import com.tamayo.jetanimation.ui.theme.Purple500
+import kotlin.random.Random.Default.nextInt
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +41,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     //ColorAnimationSimple()
                     //SizeAnimation()
-
-                    VisibilityAnimation()
+                    // VisibilityAnimation()
+                    CrossFadeExampleAnimation()
 
                 }
             }
@@ -133,13 +137,13 @@ fun VisibilityAnimation() {
         mutableStateOf(true)
     }
 
-    Button(onClick = {isVisible = !isVisible}) {
+    Button(onClick = { isVisible = !isVisible }) {
         Text(text = "Show/Hide")
     }
 
     Spacer(modifier = Modifier.size(50.dp))
 
-    AnimatedVisibility (isVisible, enter = slideInVertically(), exit = slideOutVertically()) {
+    AnimatedVisibility(isVisible, enter = slideInVertically(), exit = slideOutVertically()) {
         Box(
             modifier = Modifier
                 .size(150.dp)
@@ -148,6 +152,50 @@ fun VisibilityAnimation() {
     }
 
 
+}
+
+@Composable
+fun CrossFadeExampleAnimation() {
+    var myComponentType: ComponentType by remember {
+        mutableStateOf(ComponentType.Text)
+    }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+
+        Button(onClick = { myComponentType = getComponentTypeRandom() }) {
+            Text(text = "Change component")
+        }
+
+        Crossfade(targetState = myComponentType) {
+            when (it) {
+                ComponentType.Image -> Icon(Icons.Default.Phone, "")
+                ComponentType.Text -> Text(text = "Hi there i am a component")
+                ComponentType.Box -> Box(
+                    modifier = Modifier
+                        .size(150.dp)
+                        .background(Purple500)
+                )
+                ComponentType.Error -> Text(text = "Error")
+            }
+        }
+
+    }
+
+}
+
+fun getComponentTypeRandom(): ComponentType {
+    return when (nextInt(from = 0, until = 3)) {
+        0 -> ComponentType.Image
+        1 -> ComponentType.Text
+        2 -> ComponentType.Box
+
+        else -> ComponentType.Error
+    }
+
+}
+
+enum class ComponentType() {
+    Image, Text, Box, Error
 }
 
 
