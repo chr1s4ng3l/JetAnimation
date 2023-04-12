@@ -3,7 +3,7 @@ package com.tamayo.jetanimation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.*
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -11,17 +11,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.tamayo.jetanimation.ui.theme.JetAnimationTheme
 import com.tamayo.jetanimation.ui.theme.Purple500
 
@@ -33,9 +33,13 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Column(
                     modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     //ColorAnimationSimple()
-                    SizeAnimation()
+                    //SizeAnimation()
+
+                    VisibilityAnimation()
+
                 }
             }
         }
@@ -93,12 +97,88 @@ fun SizeAnimation() {
         mutableStateOf(true)
     }
 
-    val size by animateDpAsState(targetValue = if(smallSize) 50.dp else 150.dp)
+    var showText by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val size by animateDpAsState(
+        targetValue = if (smallSize) 50.dp else 150.dp,
+        tween(600),
+        finishedListener = { showText = !smallSize })
 
 
-        Box(modifier = Modifier
-            .size(size)
-            .background(Purple500)
-            .clickable { smallSize = !smallSize })
+    Box(modifier = Modifier
+        .size(size)
+        .background(Purple500)
+        .clickable { smallSize = !smallSize }) {
+
+        if (showText) {
+            Text(
+                text = "Hi",
+                color = Color.White,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = size.value.sp, modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+    }
 
 }
+
+@Composable
+fun VisibilityAnimation() {
+
+
+    var isVisible by remember {
+        mutableStateOf(true)
+    }
+
+    Button(onClick = {isVisible = !isVisible}) {
+        Text(text = "Show/Hide")
+    }
+
+    Spacer(modifier = Modifier.size(50.dp))
+
+    AnimatedVisibility (isVisible, enter = slideInVertically(), exit = slideOutVertically()) {
+        Box(
+            modifier = Modifier
+                .size(150.dp)
+                .background(Purple500)
+        )
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
