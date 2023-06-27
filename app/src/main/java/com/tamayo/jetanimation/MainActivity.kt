@@ -40,9 +40,9 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     //ColorAnimationSimple()
-                    //SizeAnimation()
-                    // VisibilityAnimation()
-                    CrossFadeExampleAnimation()
+                   //SizeAnimation()
+                     VisibilityAnimation()
+                    //CrossFadeExampleAnimation()
 
                 }
             }
@@ -67,7 +67,7 @@ fun ColorAnimationSimple() {
     val realColor = if (firstColor) Color.Green else Color.Red
     val realColor2 by animateColorAsState(
         targetValue = if (secondColor) Color.Yellow else Color.Magenta,
-        animationSpec = tween(2000),
+        animationSpec = tween(5000),
         finishedListener = { showBox = false }
     )
 
@@ -143,11 +143,12 @@ fun VisibilityAnimation() {
 
     Spacer(modifier = Modifier.size(50.dp))
 
-    AnimatedVisibility(isVisible, enter = slideInVertically(), exit = slideOutVertically()) {
+    AnimatedVisibility(isVisible, enter = slideInHorizontally(), exit = slideOutHorizontally()) {
         Box(
             modifier = Modifier
                 .size(150.dp)
                 .background(Purple500)
+
         )
     }
 
